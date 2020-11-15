@@ -1,0 +1,15 @@
+version: '2'
+
+services:
+  3dptools:
+    build:
+      context: ./src/
+      dockerfile: Dockerfile
+    image: rustybrooks/3dptools-base:latest
+    container_name: 3dptools
+    volumes:
+      - ./data/:/srv/data
+      - ./src/:/srv/src/
+
+    entrypoint: /srv/src/3dptools/entrypoint.sh
+
