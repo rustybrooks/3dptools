@@ -11,8 +11,7 @@ def points3d(verts, point_size=3, **kwargs):
 
 
 def trimesh3d(verts, faces, **kwargs):
-    mlab.triangular_mesh(verts[:, 0], verts[:, 1], verts[:, 2], faces,
-                         **kwargs)
+    mlab.triangular_mesh(verts[:, 0], verts[:, 1], verts[:, 2], faces, **kwargs)
 
 
 def orthogonal_vector(v):
