@@ -22,14 +22,17 @@ def merge_close_vertices(verts, faces, close_epsilon=1e-5):
     new_verts = []
 
     for i in range(nverts):
-        offset = 0
-        # print(i)
         if merged_verts[i]:
             continue
 
         nearest = kdtree.query_ball_point(verts[i], r=close_epsilon)
-        merged_verts[nearest[1]] = True
-        old2new[nearest[1]] = len(new_verts)
+        # print(nearest)
+        merged_verts[nearest] = True
+        old2new[nearest] = len(new_verts)
+        # for qi in nearest[1]:
+        #     merged_verts[qi] = True
+        #     old2new[qi] = len(new_verts)
+        #
         new_verts.append(verts[i])
 
     new_verts = np.array(new_verts)
@@ -42,55 +45,6 @@ def merge_close_vertices(verts, faces, close_epsilon=1e-5):
     # again, plot with utils.trimesh3d(new_verts, new_faces)
     print(faces[0:5], new_faces[0:5])
     return new_verts, new_faces
-
-
-
-    """
-    Will merge vertices that are closer than close_epsilon.
-
-    Warning, this has a O(n^2) memory usage because we compute the full
-    vert-to-vert distance matrix. If you have a large mesh, might want
-    to use some kind of spatial search structure like an octree or some fancy
-    hashing scheme
-
-    Returns: new_verts, new_faces
-    """
-    """
-    print(len(verts))
-    # Pairwise distance between verts
-    # if USE_SCIPY:
-    D = spdist.cdist(verts, verts)
-#    else:
-#        D = np.sqrt(np.abs(pdist_squareformed_numpy(verts)))
-
-    # Compute a mapping from old to new : for each input vert, store the index
-    # of the new vert it will be merged into
-    close_epsilon = 1e-5
-    old2new = np.zeros(D.shape[0], dtype=np.int)
-    # A mask indicating if a vertex has already been merged into another
-    merged_verts = np.zeros(D.shape[0], dtype=np.bool)
-    new_verts = []
-    for i in range(D.shape[0]):
-        print(i)
-        if merged_verts[i]:
-            continue
-        else:
-            # The vertices that will be merged into this one
-            merged = np.flatnonzero(D[i, :] < close_epsilon)
-            old2new[merged] = len(new_verts)
-            new_verts.append(verts[i])
-            merged_verts[merged] = True
-
-    new_verts = np.array(new_verts)
-
-    # Recompute face indices to index in new_verts
-    new_faces = np.zeros((len(faces), 3), dtype=np.int)
-    for i, f in enumerate(faces):
-        new_faces[i] = (old2new[f[0]], old2new[f[1]], old2new[f[2]])
-
-    # again, plot with utils.trimesh3d(new_verts, new_faces)
-    return new_verts, new_faces
-    """
 
 
 def show(plane, expected_n_contours):
